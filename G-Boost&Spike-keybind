@@ -1,0 +1,61 @@
+let gInterval = null;
+let myPlayer = { dir: 0 };
+let spikeType = null;
+let boostType = null;
+
+function place(id, angle = Math.atan2(window.mouseY - window.innerHeight / 2, window.mouseX - window.innerWidth / 2)) {
+    if (!document.ws || id == null) return;
+
+    const msgpack = window.msgpack;
+    const sendPacket = (data) => document.ws.send(new Uint8Array(msgpack.encode(data)));
+
+    sendPacket(["z", [id, null]]);
+    sendPacket(["F", [1, angle]]);
+    sendPacket(["F", [0, angle]]);
+    sendPacket(["z", [myPlayer.weapon || 0, true]]);
+}
+
+function performGSequence() {
+    const dir = myPlayer.dir;
+
+    place(spikeType, dir + Math.PI / 2);
+    place(spikeType, dir - Math.PI / 2);
+
+    place(boostType, dir);
+}
+
+function performGReleaseSequence() {
+    const dir = myPlayer.dir;
+
+    place(spikeType, dir - Math.PI / 4);
+    place(spikeType, dir + Math.PI / 4);
+}
+
+document.addEventListener("keydown", (e) => {
+    if (e.key.toLowerCase() === "g" && !gInterval) {
+        performGSequence();
+        gInterval = setInterval(performGSequence, 80);
+    }
+});
+
+document.addEventListener("keyup", (e) => {
+    if (e.key.toLowerCase() === "g" && gInterval) {
+        clearInterval(gInterval);
+        gInterval = null;
+        setTimeout(performGReleaseSequence, 80);
+    }
+});
+
+function updateItemSlots() {
+    for (let i = 31; i < 33; i++) {
+        if (document.getElementById("actionBarItem" + i)?.offsetParent !== null) {
+            boostType = i - 16;
+        }
+    }
+    for (let i = 22; i < 26; i++) {
+        if (document.getElementById("actionBarItem" + i)?.offsetParent !== null) {
+            spikeType = i - 16;
+        }
+    }
+}
+setInterval(updateItemSlots, 250);
