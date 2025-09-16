@@ -1,0 +1,4 @@
+function doNewSend(sender) {
+  if (!Net.ws || !Codec.mp) return;
+  try { Net.ws.send(Codec.encode(sender)); } catch (e) {}
+}
