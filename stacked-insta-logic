@@ -1,0 +1,13 @@
+function performStackInsta() {
+    if (!stackInsta) return;
+    // Example stack hats: Bull (7) -> Tank Gear (22) -> Turret Gear (53)
+    const stackHats = [7, 22, 53];
+    for (let i = 0; i < stackHats.length; i++) {
+        setTimeout(() => hat(stackHats[i]), i * 30);
+    }
+    // Attack after final swap
+    setTimeout(() => {
+        sendPacket(["F", [1]]);
+        setTimeout(() => sendPacket(["F", [0]]), 30);
+    }, stackHats.length * 30 + 20);
+}
