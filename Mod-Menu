@@ -17,7 +17,30 @@ border-radius:6px;cursor:pointer;}
 .vn_tab_content.active{display:block;}
 .vn_btn{padding:6px 8px;margin-right:6px;border-radius:4px;border:1px solid #666;background:transparent;color:#eee;cursor:pointer;}
 .vn_btn:hover{background:#333;}
-.vn_time{color:#ddd;font-size:12px;margin-top:6px;}
+.vn_time{color:#ddd;font-size:12px;margin-top:8px;display:block;text-align:center;}
+
+/* Dropdown style update */
+#vn_music_select {
+    background: rgba(30,30,30,.9);
+    border: 1px solid #666;
+    border-radius: 6px;
+    color: #eee;
+    padding: 4px 6px;
+    font-family: monospace;
+    font-size: 14px;
+    width: 100%;
+    box-sizing: border-box;
+}
+#vn_music_select:focus {
+    outline: none;
+    border-color: #888;
+    background: rgba(40,40,40,.95);
+}
+#vn_music_select option {
+    background: rgba(30,30,30,.95);
+    color: #eee;
+}
+
 #debugIndicator{position:fixed;top:6px;right:6px;padding:6px 8px;font-family:monospace;
 font-size:13px;z-index:2147483648;border-radius:4px;display:none;}
 #debugIndicator.success{background:rgba(0,0,0,.75);color:#8fff8f;border:1px solid #8fff8f;}
@@ -34,6 +57,217 @@ font-size:13px;z-index:2147483648;border-radius:4px;display:none;}
     wrapper.id = 'vn_two_tab_wrapper';
 
     const tabs = document.createElement('div');
+    tabs.className = 'tabs';
+
+    const btn1 = document.createElement('button');
+    btn1.className = 'vn_tab_btn active';
+    btn1.textContent = 'VN Menu';
+
+    const btn2 = document.createElement('button');
+    btn2.className = 'vn_tab_btn';
+    btn2.textContent = 'Music';
+
+    tabs.appendChild(btn1);
+    tabs.appendChild(btn2);
+    wrapper.appendChild(tabs);
+
+    const tabVN = document.createElement('div');
+    tabVN.className = 'vn_tab_content active';
+    tabVN.id = 'vn_tab_vnmenu';
+
+    const tabMusic = document.createElement('div');
+    tabMusic.className = 'vn_tab_content';
+    tabMusic.id = 'vn_tab_music';
+
+    tabVN.innerHTML = `
+        <hr>
+        <div class="nameblock">VN Mod v2</div>
+        <hr>
+        <ul>
+            <li><label class="text">AntiInsta <input type="checkbox" id="anti" checked></label></li>
+            <li><label class="text">HitBack <input type="checkbox" id="hitBack"></label></li>
+            <li><label class="text">Stacked Insta <input type="checkbox" id="stackInsta"></label></li>
+        </ul>
+        <hr>
+        <div class="nameblock">Controls:</div>
+        <hr>
+        <div class="text">
+            <ul>
+                <li>N - Auto Triple Mill</li>
+                <li>V - Spike</li>
+                <li>F - Trap</li>
+                <li>H - Double Turrets</li>
+                <li>Space - Perfect Stacked Spiketick</li>
+                <li>RightClick - AutoBreaker</li>
+                <li>R - Normal Instakill</li>
+                <li>T - Reverse Instakill</li>
+                <li>Y - OneTick</li>
+                <li>, - Boost OneTick</li>
+                <li>B - Bulltick</li>
+                <li>G - DragonBoost</li>
+                <li>Esc - Menu</li>
+            </ul>
+        </div>
+    `;
+
+    tabMusic.innerHTML = `
+        <label class="text">Song:
+            <select id="vn_music_select"></select>
+        </label>
+        <div style="margin-top:8px;text-align:center;">
+            <button id="vn_play" class="vn_btn">▶ Play</button>
+            <button id="vn_stop" class="vn_btn">■ Stop</button>
+            <button id="vn_repeat" class="vn_btn" data-repeat="1">Repeat</button>
+        </div>
+        <span id="vn_time" class="vn_time">00:00 / 00:00</span>
+        <audio id="vn_audio" preload="none" style="display:none"></audio>
+    `;
+
+    wrapper.appendChild(tabVN);
+    wrapper.appendChild(tabMusic);
+    document.body.appendChild(wrapper);
+
+    btn1.addEventListener('click', () => {
+        btn1.classList.add('active'); btn2.classList.remove('active');
+        tabVN.classList.add('active'); tabMusic.classList.remove('active');
+    });
+    btn2.addEventListener('click', () => {
+        btn2.classList.add('active'); btn1.classList.remove('active');
+        tabMusic.classList.add('active'); tabVN.classList.remove('active');
+    });
+
+    let menuVisible = false;
+    document.addEventListener('keydown', e => {
+        if(e.key === 'Escape'){
+            menuVisible = !menuVisible;
+            wrapper.classList.toggle('open', menuVisible);
+        }
+    });
+
+    window.anti = window.anti ?? true;
+    window.hitBack = window.hitBack ?? false;
+    window.stackInsta = window.stackInsta ?? false;
+
+    const antiBox = document.getElementById('anti');
+    const hitBox = document.getElementById('hitBack');
+    const stackBox = document.getElementById('stackInsta');
+
+    const syncUI = () => {
+        antiBox.checked = !!window.anti;
+        hitBox.checked = !!window.hitBack;
+        stackBox.checked = !!window.stackInsta;
+    };
+    syncUI();
+
+    antiBox.addEventListener('change', function(){ window.anti = this.checked; console.log('[VN] anti =', window.anti); });
+    hitBox.addEventListener('change', function(){ window.hitBack = this.checked; console.log('[VN] hitBack =', window.hitBack); });
+    stackBox.addEventListener('change', function(){ window.stackInsta = this.checked; console.log('[VN] stackInsta =', window.stackInsta); });
+
+    const trackList = [
+        { name:"Beartooth - Me In My Own Head", url:"https://files.catbox.moe/epsavv.mp3" },
+        { name:"Beartooth - Body Bag", url:"https://files.catbox.moe/t4ccio.mp3" },
+        { name:"Beartooth - In Between", url:"https://files.catbox.moe/x48sfz.mp3" },
+        { name:"Beartooth - Dominate", url:"https://files.catbox.moe/x48sfz.mp3" },
+        { name:"Beartooth - The Lines", url:"https://files.catbox.moe/k3symz.mp3" },
+        { name:"Dead By Sunrise - In The Darkness", url:"https://files.catbox.moe/ofxfsx.mp3" },
+        { name:"My Chemical Romance - Welcome To The Black Parade", url:"https://files.catbox.moe/o07m9t.mp3" },
+        { name:"Linkin Park - One More Light", url:"https://files.catbox.moe/kq2pwf.mp3" },
+        { name:"Beartooth - One More", url:"https://files.catbox.moe/frd69n.mp3" },
+        { name:"Beartooth - No Return", url:"https://files.catbox.moe/9to96b.mp3" },
+        { name:"She from island song", url:"https://files.catbox.moe/xb6xaz.mp3" },
+        { name:"Boat aura farm", url:"https://files.catbox.moe/6rup72.mp3" }
+    ];
+
+    const select = document.getElementById('vn_music_select');
+    trackList.forEach(t => {
+        let opt = document.createElement('option');
+        opt.value = t.url;
+        opt.textContent = t.name;
+        select.appendChild(opt);
+    });
+
+    const audio = document.getElementById('vn_audio');
+    const playBtn = document.getElementById('vn_play');
+    const stopBtn = document.getElementById('vn_stop');
+    const repeatBtn = document.getElementById('vn_repeat');
+    const timeLabel = document.getElementById('vn_time');
+
+    let repeat = true;
+
+    repeatBtn.addEventListener('click', () => {
+        repeat = !repeat;
+        repeatBtn.dataset.repeat = repeat ? "1" : "0";
+        repeatBtn.textContent = repeat ? "Repeat" : "Next";
+    });
+
+    const fmt = s => {
+        if(!isFinite(s)) return '00:00';
+        let m = Math.floor(s / 60);
+        let sec = Math.floor(s % 60);
+        return String(m).padStart(2,'0') + ':' + String(sec).padStart(2,'0');
+    };
+
+    playBtn.addEventListener('click', () => {
+        audio.src = select.value;
+        audio.play().catch(err => console.error(err));
+    });
+    stopBtn.addEventListener('click', () => {
+        audio.pause();
+        audio.currentTime = 0;
+    });
+    select.addEventListener('change', () => {
+        if(!audio.paused){
+            audio.src = select.value;
+            audio.play();
+        }
+    });
+
+    audio.addEventListener('timeupdate', () => {
+        timeLabel.textContent = `${fmt(audio.currentTime)} / ${fmt(audio.duration || 0)}`;
+    });
+
+    audio.addEventListener('ended', () => {
+        if(repeat){
+            audio.currentTime = 0;
+            audio.play();
+        } else {
+            let next = (select.selectedIndex + 1) % select.options.length;
+            select.selectedIndex = next;
+            audio.src = select.value;
+            audio.play();
+        }
+    });
+
+    const debugBox = document.createElement('div');
+    debugBox.id = 'debugIndicator';
+    debugBox.className = 'error';
+    debugBox.textContent = 'VN Debug: Waiting...';
+    document.body.appendChild(debugBox);
+
+    let debugOn = false;
+    document.addEventListener('keydown', e => {
+        if(e.key === 'Tab'){
+            e.preventDefault();
+            debugOn = !debugOn;
+            debugBox.style.display = debugOn ? 'block' : 'none';
+        }
+    });
+
+    const debugSuccess = msg => { debugBox.className = 'success'; debugBox.textContent = msg; };
+    const debugError = msg => { debugBox.className = 'error'; debugBox.textContent = msg; };
+
+    try {
+        let oldMenu = document.getElementById('infomenu');
+        if(oldMenu) oldMenu.remove();
+
+        debugSuccess('VN menu loaded in Tab 1');
+        console.log('[VN-MENU] VN menu initialized.');
+    } catch(err){
+        debugError('VN menu injection failed');
+        console.error('[VN-MENU] Error:', err);
+    }
+
+})();
     tabs.className = 'tabs';
 
     const btn1 = document.createElement('button');
