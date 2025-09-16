@@ -1,0 +1,13 @@
+const Net = {
+  ws: null,
+  sendRaw(type, ...args) {
+    if (!this.ws || this.ws.readyState !== WebSocket.OPEN) return;
+    try { this.ws.send(Codec.encode([type, args])); } catch (e) {}
+  },
+  onceOpenResolvers: [],
+  onOpen(cb) {
+    if (this.ws && this.ws.readyState === WebSocket.OPEN) cb(this.ws);
+    else this.onceOpenResolvers.push(cb);
+  }
+};
+
