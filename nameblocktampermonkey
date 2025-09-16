@@ -1,0 +1,70 @@
+// ==UserScript==
+// @name         VN Mod
+// @namespace    https://github.com/HaxBountyHunter/VN-Mod
+// @version      4
+// @description  revolver killer
+// @author       HaX + Meow???
+// @match        *://moomoo.io/*
+// @match        *://sandbox.moomoo.io/*
+// @match        *://dev.moomoo.io/*
+// @license      LGPL
+// @grant        none
+// ==/UserScript==
+
+/*Mod Log
+    V1 - Created vn mod, devlopment beings
+       - Added basic macros & auto triple mills
+       - Fixed buggy placement function
+       - Added mousebutton hats
+       - Added perfect spiketick
+       - Added bullspammer
+
+    V1.5 - added autobreaker
+         - added heal based hitback
+         - added anti instas
+         - added reverse insta
+         - removed bullspammer
+         - added music menu
+
+    V2   - added boost tick
+         - added normal insta
+         - added diamond pol 1 tick
+         - added sync detect test
+         - added sync heal q hold
+         - added a lot of visuals
+         - major bug fixes
+         - optimised heal
+         - removed autobreaker secondary
+         - added biome map
+         - fixed heal bugs
+         - made logo
+        - changed autobreaker to hold right click
+        - added menu
+        - added stack insta
+        - added bullspam detect
+        - accessories
+
+   V3   - fully automated functions (not officially by mrlag and hax)
+
+   v4   - remade script
+        - new mod menu added
+        - music menu removed and added to mod menu
+        - please stop skidding
+
+
+
+    */
+/* KEYBINDS
+    n - auto triple mills
+    v - spikes
+    f - traps
+    h - double teleporters/turrets
+    m - music menu
+    space - perfect spiketick
+    rightclick - autobreaker
+    r - normal insta
+    t - reverse insta
+    , - boost tick
+    y - 1 tick
+    b - bulltick
+    */
