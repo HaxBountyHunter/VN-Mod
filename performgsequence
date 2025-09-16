@@ -1,0 +1,11 @@
+function performGSequence() {
+  const dir = State.my.dir;
+  place(State.items.spikeType, dir + Math.PI / 2);
+  place(State.items.spikeType, dir - Math.PI / 2);
+  place(State.items.boostType, dir);
+}
+function performGReleaseSequence() {
+  const dir = State.my.dir;
+  place(State.items.spikeType, dir - Math.PI / 4);
+  place(State.items.spikeType, dir + Math.PI / 4);
+}
