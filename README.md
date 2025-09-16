@@ -22,9 +22,9 @@ Russian:
 
 ## **Авторы**
 
-### **Главный разработчик — HaX BountyHunter**
+### **Главный разработчик — HaxBountyHunter**
 
-**[HaxBountyHunter](https://github.com/)**
+**[HaxBountyHunter](https://discord.gg/QcqX3TFGYs)**
 Создал **всю основу мода**, включая:
 
 * Систему WebSocket
@@ -34,13 +34,13 @@ Russian:
 * Механику G-Spike + Boost
 * Основную обработку состояния игрока и маршрутизацию пакетов
 
-> *«Всё, что касается игровой логики и сетевых функций, было написано HaX BountyHunter с нуля для создания самого чистого и быстрого мод-ядра для MooMoo.io.»*
+> *«Всё, что касается игровой логики и сетевых функций, было написано HaxBountyHunter с нуля для создания самого чистого и быстрого мод-ядра для MooMoo.io.»*
 
 ---
 
 ### **Меню мода — Meow???**
 
-ESC-меню, которое можно встретить в некоторых сборках, **не было создано HaX BountyHunter**.
+ESC-меню, которое можно встретить в некоторых сборках, **не было создано HaxBountyHunter**.
 Оно было сделано **Meow???**, который, вероятнее всего, использовал ChatGPT для генерации большей части кода меню:
 
 * ESC-меню для включения/выключения функций
@@ -106,7 +106,7 @@ ESC-меню, которое можно встретить в некоторых
 
 ## **Важно**
 
-* Если вам нужен **чистый игровой мод**, используйте только код **HaX BountyHunter**.
+* Если вам нужен **чистый игровой мод**, используйте только код **HaxBountyHunter**.
 * Если вы хотите **ESC-меню или интерфейс**, добавьте меню от **Meow???** или создайте своё.
 * **Не распространяйте без указания авторства**:
 
@@ -139,7 +139,7 @@ It **does not include** visuals, bots, menus, or extra UI clutter — just the p
 
 ### **Lead Developer**
 
-**[HaxBountyHunter](https://github.com/)**
+**[HaxBountyHunter](https://discord.gg/QcqX3TFGYs)**
 
 * Built the **entire mod engine**, including:
 
@@ -150,13 +150,13 @@ It **does not include** visuals, bots, menus, or extra UI clutter — just the p
   * G Spike + Boost mechanics
   * Core state handling and packet routing
 
-> *"Every core piece of this script was written by HaX BountyHunter from scratch to make the smoothest, cleanest mod base for MooMoo.io."*
+> *"Every core piece of this script was written by HaxBountyHunter from scratch to make the smoothest, cleanest mod base for MooMoo.io."*
 
 ---
 
 ### **Mod Menu**
 
-The **ESC toggle menu** used in some builds **was not made by HaX BountyHunter**.
+The **ESC toggle menu** used in some builds **was not made by HaxBountyHunter**.
 It was created by **Meow???**, who likely used ChatGPT to generate most of the UI logic for:
 
 * ESC Menu display
