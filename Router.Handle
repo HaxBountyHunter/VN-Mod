@@ -1,0 +1,31 @@
+const Router = {
+  handle(ev) {
+    const bufPromise = ev.data instanceof Blob ? ev.data.arrayBuffer() : Promise.resolve(ev.data);
+    bufPromise.then(buf => {
+      const data = Codec.decode(buf);
+      if (!data) return;
+      const t = data[0];
+
+      if (t === 'C' && State.my.id == null) State.my.id = data[1];
+
+      if (t === 'a') {
+        const arr = data[1];
+        for (let i = 0; i < arr.length; i += 13) {
+          const p = arr.slice(i, i + 13);
+          if (p[0] === State.my.id) {
+            State.my.x = p[1]; State.my.y = p[2]; State.my.dir = p[3];
+            State.my.weapon = p[5]; State.my.clan = p[7]; State.my.isLeader = p[8];
+            State.my.hat = p[9]; State.my.accessory = p[10]; State.my.isSkull = p[11];
+          }
+        }
+      }
+
+      if (t === 'O' && data[1] === State.my.id) {
+        State.my.hp = data[2];
+        autoHealCheck();
+      }
+
+    }).catch(() => {});
+  },
+  closed() {}
+};
