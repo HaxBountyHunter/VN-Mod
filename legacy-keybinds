@@ -1,0 +1,100 @@
+function doNewSend(packet) {
+    if (document.ws) {
+        document.ws.send(new Uint8Array(Array.from(msgpack.encode(packet))));
+    }
+}
+
+function hat(id) {
+    doNewSend(["c", [0, id, 0]]);
+}
+
+function place(id, angle = Math.atan2(mouseY - height / 2, mouseX - width / 2)) {
+    if (id == null) return;
+    doNewSend(["z", [id, null]]);
+    doNewSend(["F", [1, angle]]);
+    doNewSend(["F", [0, angle]]);
+    doNewSend(["z", [myPlayer.weapon, true]]);
+}
+
+let keysPressed = {};
+let healToggle = true;
+let hatToggle = 0;
+let oldHat = 0;
+let normalHat = 0;
+
+document.addEventListener("keydown", (e) => {
+    if (document.activeElement.id.toLowerCase() === 'chatbox') return;
+    const key = e.key.toLowerCase();
+    if (keysPressed[key]) return;
+    keysPressed[key] = true;
+
+    switch (key) {
+        case 'n':
+            console.log("Auto Triple Mills Triggered");
+            doNewSend(["6", ["Auto Mills"]]);
+            break;
+
+        case 'v':
+            place(spikeType);
+            break;
+
+        case 'f':
+            place(boostType);
+            break;
+
+        case 'h':
+            place(turretType);
+            break;
+
+        case ' ':
+            console.log("Perfect Spiketick");
+            doNewSend(["F", [1]]);
+            setTimeout(() => doNewSend(["F", [0]]), 30);
+            break;
+
+        case 'r':
+            console.log("Normal Insta Triggered");
+            doNewSend(["c", [0, 7, 0]]);
+            break;
+
+        case 't':
+            console.log("Reverse Insta Triggered");
+            doNewSend(["c", [0, 53, 0]]);
+            break;
+
+        case ',':
+            console.log("Boost Tick");
+            place(boostType);
+            break;
+
+        case 'y':
+            console.log("Diamond Pole 1 Tick");
+            break;
+
+        case 'b':
+            console.log("Bulltick Triggered");
+            break;
+    }
+});
+
+document.addEventListener("keyup", (e) => {
+    const key = e.key.toLowerCase();
+    keysPressed[key] = false;
+});
+
+function handleHealthUpdate(hp) {
+    if (hp < 100 && hp > 0 && healToggle) {
+        const delay = hp <= 60 ? 5 : 122;
+        setTimeout(() => place(foodType), delay);
+    }
+}
+
+setInterval(() => {
+    if (hatToggle === 1) {
+        if (oldHat !== normalHat) {
+            hat(normalHat);
+            oldHat = normalHat;
+            console.log("Biome hat applied.");
+        }
+    }
+}, 100);
