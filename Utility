@@ -1,0 +1,10 @@
+(function initCanvasMouseTracking(){
+  const cvs = document.getElementById('gameCanvas');
+  if (!cvs) return;
+  cvs.addEventListener('mousemove', e => {
+    State.mouseX = e.clientX;
+    State.mouseY = e.clientY;
+    State.width = e.target.clientWidth;
+    State.height = e.target.clientHeight;
+  });
+})();
