@@ -1,0 +1,6 @@
+function autoHealCheck() {
+  if (!State.autoHealOn || State.items.foodType == null) return;
+  if (State.my.hp <= 0 || State.my.hp >= State.my.maxHP) return;
+  const delay = State.my.hp <= 60 ? 5 : 122;
+  setTimeout(() => place(State.items.foodType), delay);
+}
