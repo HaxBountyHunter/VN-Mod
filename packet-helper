@@ -1,0 +1,14 @@
+const Packets = {
+  chat(txt) { Net.sendRaw('6', txt); },
+  aim(angle) { Net.sendRaw('D', angle); },
+  placeItem(id, angle) {
+    if (id == null) return;
+    Net.sendRaw('z', id, null);
+    Net.sendRaw('F', 1, angle);
+    Net.sendRaw('F', 0, angle);
+    Net.sendRaw('z', State.my.weapon, true);
+  },
+  swapHat(id) { Net.sendRaw('c', 0, id, 0); },
+  attackStart() { Net.sendRaw('F', 1); },
+  attackStop() { Net.sendRaw('F', 0); }
+};
