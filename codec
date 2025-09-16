@@ -1,0 +1,14 @@
+const Codec = {
+  mp: null,
+  init() {
+    this.mp = window.msgpack || window.msgpack5 || window.msgpackLite || null;
+    if (!this.mp) throw new Error('msgpack not found');
+  },
+  encode(arr) { return new Uint8Array(this.mp.encode(arr)); },
+  decode(buf) {
+    try {
+      const data = this.mp.decode(new Uint8Array(buf));
+      return Array.isArray(data) && data.length > 1 && Array.isArray(data[1]) ? [data[0], ...data[1]] : data;
+    } catch { return null; }
+  }
+};
