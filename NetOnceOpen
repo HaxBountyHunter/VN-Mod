@@ -1,0 +1,4 @@
+Net.onOpen(ws => {
+  // send initial handshake or request if you need
+  // e.g. Packets.chat('mod connected');
+});
