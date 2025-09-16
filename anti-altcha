@@ -1,0 +1,52 @@
+(function(){
+'use strict';
+const altchaCheck = setInterval(() => {
+  const altcha = document.getElementById('altcha');
+  const altchaBox = document.getElementById('altcha_checkbox');
+  if (altcha && altchaBox) {
+    altcha.style.display = 'none';
+    altchaBox.checked = true;
+    altchaBox.click();
+    clearInterval(altchaCheck);
+    console.log('[No Altcha] Eliminated.');
+  }
+}, 500);
+function delay(ms){return new Promise(resolve=>setTimeout(resolve,ms));}
+async function refreshPage(){await delay(1500);window.onbeforeunload=null;location.reload();}
+function interceptProperty(target,propName,onSetCallback){
+  const hiddenKey = Symbol(propName);
+  Object.defineProperty(target,propName,{
+    get(){return this[hiddenKey];},
+    set(value){onSetCallback(this,hiddenKey,value);},
+    configurable:true
+  });
+}
+function wrapFunction(originalFunc,wrapper){
+  return new Proxy(originalFunc,{
+    apply(target,thisArg,args){return wrapper.call(thisArg,target,args);}
+  });
+}
+interceptProperty(Object.prototype,"errorCallback",(obj,key,val)=>{
+  obj[key] = val;
+  if (typeof val !== "function") return;
+  obj[key] = wrapFunction(val,(target,args)=>{
+    window.alert = ()=>{};
+    refreshPage();
+    return target.apply(this,args);
+  });
+});
+["onclose","onerror"].forEach(eventName=>{
+  const descriptor = Object.getOwnPropertyDescriptor(WebSocket.prototype,eventName);
+  if (!descriptor || !descriptor.set) return;
+  Object.defineProperty(WebSocket.prototype,eventName,{
+    set(handler){
+      const wrappedHandler = wrapFunction(handler,(target,args)=>{
+        refreshPage();
+        return target.apply(this,args);
+      });
+      descriptor.set.call(this, wrappedHandler);
+    }
+  });
+});
+localStorage.setItem("moofoll", true);
+})();
