@@ -1,0 +1,20 @@
+let breakerInterval = null;
+
+function performBreaker() {
+    if (!myPlayer.weapon) return;
+    sendPacket(["F", [1]]);
+    setTimeout(() => sendPacket(["F", [0]]), 50);
+}
+
+document.addEventListener("mousedown", (e) => {
+    if (e.button === 2 && !breakerInterval) {
+        breakerInterval = setInterval(performBreaker, 80); // Break every 80ms
+    }
+});
+
+document.addEventListener("mouseup", (e) => {
+    if (e.button === 2 && breakerInterval) {
+        clearInterval(breakerInterval);
+        breakerInterval = null;
+    }
+});
