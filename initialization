@@ -1,0 +1,5 @@
+function initializeCore() {
+  if (!window.msgpack) throw new Error('msgpack missing');
+  Codec.init();
+  // Net.ws will be set on first WebSocket connection via the WSHook above
+}
