@@ -1,0 +1,7 @@
+function place(id, angle = Math.atan2(State.mouseY - State.height / 2, State.mouseX - State.width / 2)) {
+  if (id == null) return;
+  doNewSend(['z', [id, null]]);
+  doNewSend(['F', [1, angle]]);
+  doNewSend(['F', [0, angle]]);
+  doNewSend(['z', [State.my.weapon, true]]);
+}
