@@ -1,0 +1,42 @@
+(function() {
+    let lastKillTime = 0;
+
+    function sendKillChatMessage() {
+        const now = Date.now();
+        if (now - lastKillTime < 500) return;
+        lastKillTime = now;
+
+        const killMessages = [
+            "EZ Clap!",
+            "Get better, kid",
+            "GG!",
+            "Outplayed",
+            "Sit down!",
+            "Too easy!",
+            "VN Mod on top!"
+        ];
+
+        const randomMessage = killMessages[Math.floor(Math.random() * killMessages.length)];
+        doNewSend(["ch", [randomMessage]]);
+        console.log("[VN-KILLCHAT] Sent message:", randomMessage);
+    }
+
+    const oldMessageHandler = window.handleServerMessage || function() {};
+    window.handleServerMessage = function(packet) {
+        try {
+            if (packet[0] === "k") {
+                const killedID = packet[1];
+                if (killedID === myPlayer.sid) return;
+
+                const killerID = packet[2];
+                if (killerID === myPlayer.sid) {
+                    sendKillChatMessage();
+                }
+            }
+        } catch (e) {
+            console.error("[VN-KILLCHAT] Error:", e);
+        }
+
+        oldMessageHandler(packet);
+    };
+})();
