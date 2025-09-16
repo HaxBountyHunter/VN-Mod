@@ -1,0 +1,21 @@
+(function hookWebSocket() {
+  const NativeWS = window.WebSocket;
+  let hooked = false;
+  class WSProxy extends NativeWS {
+    constructor(...args) {
+      super(...args);
+      if (!hooked) {
+        hooked = true;
+        Net.ws = this;
+        window.DBC_ws = this;
+        this.addEventListener('open', () => {
+          Net.onceOpenResolvers.splice(0).forEach(fn => { try { fn(Net.ws); } catch {} });
+        });
+        this.addEventListener('message', ev => Router.handle(ev));
+        this.addEventListener('close', () => Router.closed && Router.closed());
+        this.addEventListener('error', () => Router.closed && Router.closed());
+      }
+    }
+  }
+  window.WebSocket = WSProxy;
+})();
