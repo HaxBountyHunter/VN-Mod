@@ -1,0 +1,7 @@
+function getSecondaryWeaponIndex() {
+  for (let i = 9; i <= 15; i++) {
+    const el = document.getElementById('actionBarItem' + i);
+    if (el && el.offsetParent !== null && i !== State.my.weapon) return i;
+  }
+  return State.my.weapon;
+}
