@@ -1,0 +1,178 @@
+(function setupVNVisuals() {
+    console.log("VN Mod Visuals Loaded");
+
+    const mainMenu = document.getElementById("mainMenu");
+    if (mainMenu) {
+        mainMenu.style.backgroundImage = "url(https://wormax.org/chrome3kafa/moomooio-background.png)";
+        mainMenu.style.backgroundSize = "cover";
+        mainMenu.style.backgroundPosition = "center";
+        mainMenu.style.width = "100%";
+        mainMenu.style.height = "100%";
+    }
+
+    const gameName = document.getElementById("gameName");
+    if (gameName) {
+        gameName.innerHTML = "VN Mod";
+        const devTag = `<div id="customMenuName">
+            <h3 style="font-size: 50px;" class="indent">By Mrlag & HaX</h3>
+        </div>`;
+        gameName.insertAdjacentHTML("beforeend", devTag);
+        Object.assign(gameName.style, {
+            color: "#333",
+            textShadow: "0 1px 0 #181818, 0 2px 0 #181818, 0 3px 0 #181818, 0 4px 0 #181818, 0 5px 0 #181818, rgba(0,0,0,0.4) 1px 1px 40px",
+            textAlign: "center",
+            fontSize: "156px",
+            marginBottom: "-30px"
+        });
+    }
+
+    document.getElementById("loadingText").innerHTML = `<div id="VNLoader" class="loader"></div>`;
+    document.getElementById("diedText").innerHTML = "VN Died :C";
+    document.getElementById("diedText").style.color = "#ffffff";
+
+    document.title = "VN Mod";
+
+    const leaderboard = document.getElementById("leaderboard");
+    if (leaderboard) leaderboard.append(" VN Mod");
+
+    const mapDisplay = document.getElementById("mapDisplay");
+    if (mapDisplay) {
+        mapDisplay.style.background = "url('https://wormax.org/chrome3kafa/moomooio-background.png')";
+    }
+
+    const storeHolder = document.getElementById("storeHolder");
+    if (storeHolder) {
+        storeHolder.style.height = "1150px";
+        storeHolder.style.width = "400px";
+    }
+
+    $("#youtuberOf").remove();
+    $("#adCard").remove();
+    $("#mobileInstructions").remove();
+    $("#downloadButtonContainer").remove();
+    $("#mobileDownloadButtonContainer").remove();
+    $(".downloadBadge").remove();
+
+    const style = document.createElement("style");
+    style.innerHTML = `
+        #linksContainer2 {
+            background: #ccc;
+            border-top: 5px solid;
+            border-image: linear-gradient(to right,#333,#333) 1 1 0 0;
+            height: 18px;
+            top: 0%;
+            color: #333;
+            transition: 0.3s;
+        }
+        #linksContainer2:hover {
+            background: #ccc;
+            box-shadow: 0 0 20px #333;
+        }
+
+        .menuButton {
+            transition: 0.5s;
+            border-radius: 0px;
+        }
+        .menuButton:hover {
+            transform: scale(1.11);
+            box-shadow: 0 0 20px #333;
+        }
+
+        .menuCard {
+            background-color: #181818;
+            border-top: 5px solid;
+            border-image: linear-gradient(to right,#333,#303030) 1 0 0 0;
+            color: #333;
+            margin-top: 0px;
+            border-radius: 0px;
+            border-bottom: 0px solid red;
+            transition: all 1s;
+            box-shadow: 0px 0px #333;
+            transform: translateX(0px);
+        }
+        .menuCard:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 20px #333;
+        }
+        .menuCard.active {
+            transform: translateX(0px);
+        }
+
+        #promoImgHolder {
+            overflow-y: scroll;
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+            height: 90px;
+            max-height: 90px;
+        }
+
+        .menuLink {
+            font-size: 20px;
+            color: #333;
+        }
+        a {
+            color: #333;
+            text-decoration: none;
+        }
+
+        #VNLoader {
+            border: 16px solid #f3f3f3;
+            border-top: 16px solid #333;
+            border-radius: 50%;
+            width: 120px;
+            height: 120px;
+            animation: spin 2s linear infinite;
+            margin: auto;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    `;
+    document.head.appendChild(style);
+
+    const shadowStyle = "box-shadow: 0 0 10px 10px rgba(0, 0, 0, 0.4)";
+    const setupCardDiv = document.getElementById("setupCard");
+    const guideCardDiv = document.getElementById("guideCard");
+
+    if (setupCardDiv) setupCardDiv.style.cssText += shadowStyle;
+    if (guideCardDiv) {
+        guideCardDiv.style.cssText += shadowStyle;
+        setupCardDiv.style.backgroundColor = "#181818";
+        guideCardDiv.style.backgroundColor = "#181818";
+    }
+
+    const pingDisplay = document.getElementById("pingDisplay");
+    if (pingDisplay) {
+        pingDisplay.style.fontSize = "20px";
+        pingDisplay.style.fontFamily = "Calibri";
+        pingDisplay.style.display = "block";
+        pingDisplay.style.color = "#fff";
+        pingDisplay.style.textShadow = "3px 3px 3px black";
+        pingDisplay.style.zIndex = "1";
+    }
+
+    const times = [];
+    let fps;
+    function refreshLoop() {
+        window.requestAnimationFrame(() => {
+            const now = performance.now();
+            while (times.length > 0 && times[0] <= now - 1000) {
+                times.shift();
+            }
+            times.push(now);
+            fps = times.length;
+            refreshLoop();
+        });
+    }
+    refreshLoop();
+
+    setInterval(() => {
+        if (pingDisplay) {
+            pingDisplay.style.display = "block";
+            pingDisplay.innerText = `${window.pingTime || 0} ping | ${fps || 0} fps`;
+        }
+    }, 250);
+
+    console.log("VN Mod visuals applied successfully.");
+})();
