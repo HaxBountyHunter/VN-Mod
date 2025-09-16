@@ -1,0 +1,94 @@
+let healToggle = true;
+let foodType = null;
+let myPlayer = { id: null, hp: 100, maxHP: 100 };
+
+(function autoHealHook() {
+    const msgpack = window.msgpack;
+    if (!msgpack) {
+        console.error("Msgpack not found! Autoheal cannot run.");
+        return;
+    }
+
+    let originalSend = WebSocket.prototype.send;
+    WebSocket.prototype.send = new Proxy(originalSend, {
+        apply(target, ws, args) {
+            if (!document.ws) {
+                document.ws = ws;
+            }
+            return Reflect.apply(target, ws, args);
+        }
+    });
+
+    wsMessageHook();
+
+    function wsMessageHook() {
+        if (!WebSocket.prototype.__originalAddEventListener) {
+            WebSocket.prototype.__originalAddEventListener = WebSocket.prototype.addEventListener;
+
+            WebSocket.prototype.addEventListener = function (type, listener, options) {
+                if (type === "message") {
+                    const wrappedListener = (event) => {
+                        let data = new Uint8Array(event.data);
+                        let decoded;
+                        try {
+                            decoded = msgpack.decode(data);
+                        } catch (e) {
+                            return;
+                        }
+
+                        if (decoded[0] === "O" && decoded[1] === myPlayer.id) {
+                            myPlayer.hp = decoded[2];
+                            autoHealCheck();
+                        }
+
+                        if (decoded[0] === "C" && myPlayer.id === null) {
+                            myPlayer.id = decoded[1];
+                            console.log("[Autoheal] Player ID set:", myPlayer.id);
+                        }
+
+                        listener(event);
+                    };
+                    return WebSocket.prototype.__originalAddEventListener.call(this, type, wrappedListener, options);
+                }
+                return WebSocket.prototype.__originalAddEventListener.call(this, type, listener, options);
+            };
+        }
+    }
+})();
+
+function autoHealCheck() {
+    if (!healToggle || foodType === null) return;
+    if (myPlayer.hp <= 0 || myPlayer.hp >= myPlayer.maxHP) return;
+
+    const delay = myPlayer.hp <= 60 ? 5 : 122;
+    setTimeout(() => {
+        placeFood(foodType);
+    }, delay);
+}
+
+function placeFood(id, angle = Math.atan2(window.mouseY - window.innerHeight / 2, window.mouseX - window.innerWidth / 2)) {
+    if (id == null || !document.ws) return;
+    const msg = ["z", [id, null]];
+    const msg2 = ["F", [1, angle]];
+    const msg3 = ["F", [0, angle]];
+    const msg4 = ["z", [myPlayer.weapon || 0, true]];
+
+    const encoded = (packet) => new Uint8Array(window.msgpack.encode(packet));
+
+    document.ws.send(encoded(msg));
+    document.ws.send(encoded(msg2));
+    document.ws.send(encoded(msg3));
+    document.ws.send(encoded(msg4));
+}
+
+function updateFoodSlot() {
+    for (let i = 16; i <= 18; i++) {
+        const el = document.getElementById("actionBarItem" + i);
+        if (el && el.offsetParent !== null) {
+            foodType = i - 16;
+            return;
+        }
+    }
+    foodType = null;
+}
+setInterval(updateFoodSlot, 250);
