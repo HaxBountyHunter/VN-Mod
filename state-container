@@ -1,0 +1,12 @@
+const State = {
+  my: { id: null, x: 0, y: 0, dir: 0, weapon: 0, hat: 0, accessory: 0, isSkull: 0, hp: 100, maxHP: 100 },
+  width: 1920,
+  height: 1080,
+  mouseX: 0,
+  mouseY: 0,
+  items: { boostType: null, spikeType: null, windmillType: null, turretType: null, foodType: null },
+  keys: Object.create(null),
+  placing: false,
+  rightClickLoop: null,
+  autoHealOn: true
+};
